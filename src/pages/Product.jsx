@@ -2,11 +2,13 @@ import styled from "@emotion/styled";
 import { Add, Remove } from "@mui/icons-material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
+import { addProduct } from "../redux/cartRedux";
 import { publicRequest } from "../requestMethod";
 import { mobile } from "../responsive";
 
@@ -121,12 +123,12 @@ const Button = styled.button`
 const Product = () => {
   const location = useLocation();
   // product id spit from url, log to see it
-  //   console.log(location)
   const productID = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
+  const dispatch = useDispatch();
 
   const handleQuantity = (type) => {
     if (type === "inc") {
@@ -138,6 +140,7 @@ const Product = () => {
 
   const handleClick = () => {
     // UPDATE CART
+    dispatch(addProduct({ ...product, quantity, color, size }));
     // CREATE CART
   };
 
@@ -146,15 +149,11 @@ const Product = () => {
       try {
         const res = await publicRequest.get("/products/find/" + productID);
         setProduct(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
 
     getProduct();
   }, [productID]);
-
-  console.log(product);
 
   return (
     <Container>
@@ -171,7 +170,6 @@ const Product = () => {
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              {console.log("test", product)}
               {product.color?.map((c) => (
                 <FilterColor color={c} key={c} onClick={() => setColor(c)} />
               ))}
