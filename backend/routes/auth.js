@@ -34,6 +34,7 @@ router.post("/login", async (req, res) => {
       user.password,
       process.env.PASSWORD_SECRET
     )
+
     const passwordStr = hashedPassword.toString(CryptoJS.enc.Utf8)
     if (passwordStr !== req.body.password) {
       return res.status(401).json("Wrong password")
