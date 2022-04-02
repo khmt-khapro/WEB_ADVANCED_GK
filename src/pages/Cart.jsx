@@ -164,7 +164,7 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
-  const cart = useSelector((state) => state);
+  const cart = useSelector((state) => state.cart);
   const [stripeToken, setStripeToken] = useState(null);
   const history = useHistory();
 
@@ -177,10 +177,11 @@ const Cart = () => {
       try {
         const res = await userRequest.post("/checkout/payment", {
           tokenId: stripeToken.id,
-          amount: cart.total * 100,
+          // amount: cart.total * 100,
+          amount: 500,
         });
         history.push("/success", { data: res.data });
-
+        console.log(res);
         // call payment
         stripeToken && makeRequest();
       } catch (err) {}
